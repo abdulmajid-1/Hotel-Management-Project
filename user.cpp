@@ -26,7 +26,7 @@ void UserActions::sign_in(string user_name, string password)
       return;
     }
   }
-  cout << "Username of password Incorrect." << endl;
+  cout << "Username or password Incorrect." << endl;
 }
 
 string roleToString(UserRole role)
@@ -64,7 +64,7 @@ void UserActions::signup(string user_name, string password)
   current_user = new_user;
   cout << "You are signed up successfully." << endl;
 
-  // WE HAVE TO EXPLICTLY REMEMBER THAT order or rows I.E.
+  // WE HAVE TO EXPLICTLY REMEMBER THAT order of rows I.E.
   // ID, USERNAME, PASSWORD, ROLE
   vector<string> new_user_values = {
       to_string(new_user->id), new_user->user_name, new_user->password, roleToString(new_user->role)};
