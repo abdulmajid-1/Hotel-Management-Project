@@ -22,9 +22,11 @@ struct User
 
 class UserActions
 {
+  const static string USER_TABLE_NAME;
   static vector<User *> users;
 
 public:
+  static void populate_users();
   static User *current_user;
   static void sign_in(string user_name, string password);
   static void signup(string user_name, string password);

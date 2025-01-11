@@ -20,6 +20,8 @@ void manage_auth()
     cout << "Press 1: for Signin, 2 for Signup: ";
     cin >> ans;
 
+    cin.ignore();
+
     if (ans < 1 || ans > 2)
       continue;
 
@@ -39,6 +41,9 @@ void manage_auth()
 
 int main()
 {
+  // get the persisted data from the disk
+  UserActions::populate_users();
+
   Hotel hotel;
   manage_auth();
 
