@@ -16,7 +16,8 @@ void manage_auth()
   while (!UserActions::current_user)
   {
     int ans;
-    cout << "Sign in or Signup. Press 1: for Signin, 2 for Signup: ";
+    cout << "Sign in or Signup." << endl;
+    cout << "Press 1: for Signin, 2 for Signup: ";
     cin >> ans;
 
     if (ans < 1 || ans > 2)
@@ -57,35 +58,39 @@ int main()
         cin >> c;
         c = tolower(c);
 
-        if (c == 's')
+        switch (c)
         {
+        case 's':
           show_admin_options();
-        }
-        else if (c == 'a')
-        {
+          break;
+
+        case 'a':
           hotel.add_floor();
           cout << "New Floor has been added." << endl;
-        }
-        else if (c == 'b')
-        {
+          break;
+
+        case 'b':
           int n;
           cout << "Enter Floor no.: ";
           cin >> n;
           hotel.add_room(n);
           cout << "Room is added to floor #" << n << endl;
-        }
-        else if (c == 'c')
-        {
+          break;
+
+        case 'c':
           hotel.show_all_floors();
-        }
-        else if (c == 'd')
-        {
+          break;
+        case 'd':
           UserActions::signout();
           manage_auth();
-        }
-        else if (c != 'q')
-        {
+          break;
+
+        case 'q':
+          exit(0);
+
+        default:
           cout << "Invalid option. Try again." << endl;
+          break;
         }
       }
 
@@ -96,6 +101,7 @@ int main()
       catch (const exception &e)
       {
         cerr << "Exception: " << e.what() << endl;
+        exit(1);
       }
     }
 
