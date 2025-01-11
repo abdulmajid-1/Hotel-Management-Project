@@ -44,9 +44,7 @@ public:
   {
     // if we are checking for admin, we don't need to check for require_auth
     // because require_admin will explicitly check for require_auth
-    // TODO: uncomment this
-    // UserActions::require_admin();
-
+    UserActions::require_admin();
     root->children.push_back(new FloorNode(++floors, UserActions::current_user->id));
   }
 

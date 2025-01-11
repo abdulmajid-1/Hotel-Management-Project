@@ -50,9 +50,8 @@ int main()
   // reaching here means, we have successfully signed in.
   // now the user can be admin or user
   // first handle the admin user
-  // TODO: CHANGE THIS TO ADMIN
   // Reaching here means we have successfully signed in
-  if (UserActions::current_user && UserActions::current_user->role == USER)
+  if (UserActions::current_user && UserActions::current_user->role == ADMIN)
   {
     char c = '\0';
     while (tolower(c) != 'q')
