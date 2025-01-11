@@ -1,6 +1,6 @@
 #include <iostream>
-#include "user.hpp"
-#include "hotel.hpp"
+#include "models/user.hpp"
+#include "models/hotel.hpp"
 using namespace std;
 
 void show_admin_options()
