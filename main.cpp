@@ -26,9 +26,9 @@ void manage_auth()
     string user_name;
     string password;
     cout << "Enter user_name: ";
-    cin >> user_name;
+    getline(cin, user_name);
     cout << "Enter password: ";
-    cin >> password;
+    getline(cin, password);
 
     if (ans == 1)
       UserActions::sign_in(user_name, password);

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include "persistor.hpp"
 using namespace std;
 
 enum UserRole

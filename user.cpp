@@ -17,6 +17,19 @@ void UserActions::sign_in(string user_name, string password)
   cout << "Username of password Incorrect." << endl;
 }
 
+string roleToString(UserRole role)
+{
+  switch (role)
+  {
+  case USER:
+    return "USER";
+  case ADMIN:
+    return "ADMIN";
+  default:
+    return "UNKNOWN";
+  }
+}
+
 void UserActions::signup(string user_name, string password)
 {
   // first find if this user with this user_name doesn't exists
@@ -38,6 +51,12 @@ void UserActions::signup(string user_name, string password)
   users.push_back(new_user);
   current_user = new_user;
   cout << "You are signed up successfully." << endl;
+
+  // WE HAVE TO EXPLICTLY REMEMBER THAT order or rows I.E.
+  // ID, USERNAME, PASSWORD, ROLE
+  vector<string> new_user_values = {
+      to_string(new_user->id), new_user->user_name, new_user->password, roleToString(new_user->role)};
+  Persister::save("users", new_user_values);
 }
 
 void UserActions::signout() { current_user = NULL; }
