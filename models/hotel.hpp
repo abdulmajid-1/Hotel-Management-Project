@@ -12,7 +12,6 @@ struct RoomNode
   int room_no;
   // who created this room
   int user_id;
-  int booked_by = -1;
   RoomNode *next = NULL;
 
   RoomNode(int room_no, int user_id) : room_no(room_no), user_id(user_id) {}
@@ -39,12 +38,53 @@ class Hotel
   FloorNode *root = new FloorNode(0, 0);
   int floors = 0;
   const string FLOOR_TABLE_NAME = "floors";
+  const string ROOM_TABLE_NAME = "rooms";
 
 public:
   Hotel()
   {
     // getting all the floors from the disk, and adding them to the room
-    vector<vector<string>> data = Persistor::get_table(FLOOR_TABLE_NAME);
+    vector<vector<string>> floors_raw_data = Persistor::get_table(FLOOR_TABLE_NAME);
+    for (vector<string> row : floors_raw_data)
+    {
+      // values are
+      // FLOOR NO, USER_ID
+      floors++;
+      root->children.push_back(new FloorNode(stoi(row[0]), stoi(row[1])));
+    }
+
+    // now get rooms, and store them in the respective floor
+    vector<vector<string>> rooms_raw_data = Persistor::get_table(ROOM_TABLE_NAME);
+    for (vector<string> row : rooms_raw_data)
+    {
+      // room values are
+      // ROOM NO, USER_ID, FLOOR_NO
+      int which_floor = stoi(row[2]);
+
+      if (which_floor > root->children.size() || which_floor < 1)
+      {
+        cout << "Invalid Room Data." << endl;
+        exit(1);
+      }
+
+      int counter = 0;
+      FloorNode *current_floor = root->children[counter];
+      while (counter < root->children.size() && counter < which_floor - 1)
+        current_floor = root->children[++counter];
+
+      RoomNode *new_room = new RoomNode(stoi(row[0]), stoi(row[1]));
+      if (!current_floor->rooms)
+        current_floor->rooms = new_room;
+      else
+      {
+        // go to the end of rooms and add it
+        RoomNode *curr_room = current_floor->rooms;
+
+        while (curr_room->next != NULL)
+          curr_room->next;
+        curr_room->next = new_room;
+      }
+    }
   }
 
   void add_floor()
@@ -58,11 +98,14 @@ public:
     vector<string> floor_values = {to_string(new_floor->floor_no), to_string(new_floor->user_id)};
 
     // saving the newly created floor to the disk
+    // VALUES ARE:
+    // FLOOR NO, USER_ID
     Persistor::save(FLOOR_TABLE_NAME, floor_values);
   }
 
   void show_all_floors()
   {
+    cout << endl;
     vector<string> suffix = {"st", "nd", "rd"};
     for (int i = 0; i < root->children.size(); i++)
     {
@@ -76,6 +119,7 @@ public:
 
       cout << i + 1 << (i <= 2 ? suffix[i] : "th") << " floor: " << room_count << " rooms" << endl;
     }
+    cout << endl;
   }
 
   void add_room(int which_floor)
@@ -91,11 +135,17 @@ public:
     while (counter < root->children.size() && counter < which_floor - 1)
       current_floor = root->children[++counter];
 
+    vector<string> room_values;
+
     RoomNode *curr_room = current_floor->rooms;
     if (!curr_room)
     {
       RoomNode *new_room = new RoomNode(1, UserActions::current_user->id);
       current_floor->rooms = new_room;
+
+      room_values.push_back(to_string(new_room->room_no));
+      room_values.push_back(to_string(new_room->user_id));
+      room_values.push_back(to_string(which_floor));
     }
     else
     {
@@ -103,6 +153,14 @@ public:
         curr_room = curr_room->next;
       RoomNode *new_room = new RoomNode(curr_room->room_no + 1, UserActions::current_user->id);
       curr_room->next = new_room;
+
+      room_values.push_back(to_string(new_room->room_no));
+      room_values.push_back(to_string(new_room->user_id));
+      room_values.push_back(to_string(which_floor));
     }
+
+    // room values are
+    // ROOM NO, USER_ID, FLOOR_NO
+    Persistor::save(ROOM_TABLE_NAME, room_values);
   }
 };
