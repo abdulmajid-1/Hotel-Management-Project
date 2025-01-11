@@ -6,7 +6,7 @@
 #include "utils.hpp"
 using namespace std;
 
-class Persister
+class Persistor
 {
 public:
   static void save(string table_name, vector<string> row);

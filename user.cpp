@@ -4,9 +4,10 @@ vector<User *> UserActions::users;
 User *UserActions::current_user = NULL;
 const string UserActions::USER_TABLE_NAME = "users";
 
+// populating data from the disk at the start of application
 void UserActions::populate_users()
 {
-  vector<vector<string>> data = Persister::get_table(USER_TABLE_NAME);
+  vector<vector<string>> data = Persistor::get_table(USER_TABLE_NAME);
   for (vector<string> row : data)
   {
     User *user = new User(stoi(row[0]), row[1], row[2]);
@@ -68,7 +69,7 @@ void UserActions::signup(string user_name, string password)
   // ID, USERNAME, PASSWORD, ROLE
   vector<string> new_user_values = {
       to_string(new_user->id), new_user->user_name, new_user->password, roleToString(new_user->role)};
-  Persister::save(USER_TABLE_NAME, new_user_values);
+  Persistor::save(USER_TABLE_NAME, new_user_values);
 }
 
 void UserActions::signout() { current_user = NULL; }

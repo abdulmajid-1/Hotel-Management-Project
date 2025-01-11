@@ -1,6 +1,6 @@
 #include "persistor.hpp"
 
-void Persister::save(string table_name, vector<string> row)
+void Persistor::save(string table_name, vector<string> row)
 {
   string filename = "data/" + table_name + ".txt";
   // Open the file in append mode
@@ -20,7 +20,7 @@ void Persister::save(string table_name, vector<string> row)
   out.close();
 }
 
-vector<vector<string>> Persister::get_table(string table_name)
+vector<vector<string>> Persistor::get_table(string table_name)
 {
   vector<vector<string>> table_data;
   string filename = "data/" + table_name + ".txt";
