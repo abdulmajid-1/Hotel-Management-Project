@@ -38,14 +38,27 @@ class Hotel
   // this is the manager root, this will manage all the floors and rooms
   FloorNode *root = new FloorNode(0, 0);
   int floors = 0;
+  const string FLOOR_TABLE_NAME = "floors";
 
 public:
+  Hotel()
+  {
+    // getting all the floors from the disk, and adding them to the room
+    vector<vector<string>> data = Persistor::get_table(FLOOR_TABLE_NAME);
+  }
+
   void add_floor()
   {
     // if we are checking for admin, we don't need to check for require_auth
     // because require_admin will explicitly check for require_auth
     UserActions::require_admin();
-    root->children.push_back(new FloorNode(++floors, UserActions::current_user->id));
+    FloorNode *new_floor = new FloorNode(++floors, UserActions::current_user->id);
+    root->children.push_back(new_floor);
+
+    vector<string> floor_values = {to_string(new_floor->floor_no), to_string(new_floor->user_id)};
+
+    // saving the newly created floor to the disk
+    Persistor::save(FLOOR_TABLE_NAME, floor_values);
   }
 
   void show_all_floors()

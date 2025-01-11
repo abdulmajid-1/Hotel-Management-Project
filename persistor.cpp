@@ -10,10 +10,10 @@ void Persistor::save(string table_name, vector<string> row)
     throw "Error: Could not open file " + filename + " for writing.";
 
   // Write row data to the file
-  for (const string &value : row)
+  for (int i = 0; i < row.size(); i++)
   {
-    // check if the value reference is equal to the last element of the vector
-    out << value << (value == row.back() ? "\n" : ",");
+    string value = row[i];
+    out << value << (i == row.size() - 1 ? "\n" : ",");
   }
 
   // Close the file
