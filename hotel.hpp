@@ -7,9 +7,12 @@ struct RoomNode
 {
   // all the information about room goes here
   // this will be implemented as a linked list
-  // currently we have only one information that is room no.
   int room_no;
+  // who created this room
   int user_id;
+  int booked_by = -1;
+  RoomNode *next = NULL;
+
   RoomNode(int room_no, int user_id) : room_no(room_no), user_id(user_id) {}
 };
 
@@ -39,8 +42,37 @@ public:
   {
     // if we are checking for admin, we don't need to check for require_auth
     // because require_admin will explicitly check for require_auth
-    UserActions::require_admin();
+    // TODO: uncomment this
+    // UserActions::require_admin();
 
-    root->children.push_back(new FloorNode(++floors, current_user->id));
+    root->children.push_back(new FloorNode(++floors, UserActions::current_user->id));
+  }
+
+  void add_room(int which_floor)
+  {
+    int counter = 1;
+    FloorNode *current_floor = root->children[counter];
+    while (counter < root->children.size())
+      current_floor = root->children[++counter];
+
+    if (counter < which_floor)
+    {
+      cout << "Floor doesn't exists." << endl;
+      return;
+    }
+
+    RoomNode *curr_room = current_floor->rooms;
+    if (!curr_room)
+    {
+      RoomNode *new_room = new RoomNode(1, UserActions::current_user->id);
+      current_floor->rooms = new_room;
+    }
+    else
+    {
+      while (curr_room->next != NULL)
+        curr_room = curr_room->next;
+      RoomNode *new_room = new RoomNode(curr_room->room_no + 1, UserActions::current_user->id);
+      curr_room->next = new_room;
+    }
   }
 };
