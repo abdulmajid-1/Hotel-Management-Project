@@ -72,6 +72,11 @@ int main()
           cout << "Enter Floor no.: ";
           cin >> n;
           hotel.add_room(n);
+          cout << "Room is added to floor #" << n << endl;
+        }
+        else if (c == 'c')
+        {
+          hotel.show_all_floors();
         }
         else if (c == 'd')
         {

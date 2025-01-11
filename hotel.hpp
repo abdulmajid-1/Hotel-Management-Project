@@ -48,18 +48,35 @@ public:
     root->children.push_back(new FloorNode(++floors, UserActions::current_user->id));
   }
 
+  void show_all_floors()
+  {
+    vector<string> suffix = {"st", "nd", "rd"};
+    for (int i = 0; i < root->children.size(); i++)
+    {
+      RoomNode *temp = root->children[i]->rooms;
+      int room_count = 0;
+      while (temp)
+      {
+        temp = temp->next;
+        room_count++;
+      }
+
+      cout << i + 1 << (i <= 2 ? suffix[i] : "th") << " floor: " << room_count << " rooms" << endl;
+    }
+  }
+
   void add_room(int which_floor)
   {
-    int counter = 1;
-    FloorNode *current_floor = root->children[counter];
-    while (counter < root->children.size())
-      current_floor = root->children[++counter];
-
-    if (counter < which_floor)
+    if (which_floor > root->children.size() || which_floor < 1)
     {
-      cout << "Floor doesn't exists." << endl;
+      cout << "Floor doesn't exist." << endl;
       return;
     }
+
+    int counter = 0;
+    FloorNode *current_floor = root->children[counter];
+    while (counter < root->children.size() && counter < which_floor - 1)
+      current_floor = root->children[++counter];
 
     RoomNode *curr_room = current_floor->rooms;
     if (!curr_room)
