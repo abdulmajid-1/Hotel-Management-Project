@@ -5,6 +5,40 @@
 #include "user.hpp"
 using namespace std;
 
+enum RoomType
+{
+  SINGLE,
+  DOUBLE,
+  SUITE,
+};
+
+string typeToString(RoomType type)
+{
+  switch (type)
+  {
+  case SINGLE:
+    return "SINGLE";
+  case DOUBLE:
+    return "DOUBLE";
+  case SUITE:
+    return "SUITE";
+  default:
+    return "UNKNOWN";
+  }
+}
+
+RoomType stringToType(std::string str)
+{
+  if (str == "SINGLE")
+    return SINGLE;
+  else if (str == "DOUBLE")
+    return DOUBLE;
+  else if (str == "SUITE")
+    return SUITE;
+
+  throw "Unknown room type string";
+}
+
 struct RoomNode
 {
   // all the information about room goes here
@@ -12,9 +46,11 @@ struct RoomNode
   int room_no;
   // who created this room
   int user_id;
+  RoomType type;
+
   RoomNode *next = NULL;
 
-  RoomNode(int room_no, int user_id) : room_no(room_no), user_id(user_id) {}
+  RoomNode(int room_no, int user_id, RoomType type = SINGLE) : room_no(room_no), user_id(user_id), type(type) {}
 };
 
 struct FloorNode
@@ -58,8 +94,8 @@ public:
     for (vector<string> row : rooms_raw_data)
     {
       // room values are
-      // ROOM NO, USER_ID, FLOOR_NO
-      int which_floor = stoi(row[2]);
+      // ROOM NO, USER_ID, TYPE, FLOOR_NO
+      int which_floor = stoi(row[3]);
 
       if (which_floor > root->children.size() || which_floor < 1)
       {
@@ -72,7 +108,7 @@ public:
       while (counter < root->children.size() && counter < which_floor - 1)
         current_floor = root->children[++counter];
 
-      RoomNode *new_room = new RoomNode(stoi(row[0]), stoi(row[1]));
+      RoomNode *new_room = new RoomNode(stoi(row[0]), stoi(row[1]), stringToType(row[2]));
       if (!current_floor->rooms)
         current_floor->rooms = new_room;
       else
@@ -122,7 +158,46 @@ public:
     cout << endl;
   }
 
-  void add_room(int which_floor)
+  void show_all_rooms_admin()
+  {
+    vector<vector<string>> users = Persistor::get_table("users");
+
+    cout << endl;
+    for (int i = 0; i < root->children.size(); i++)
+    {
+      cout << "Floor #" << i + 1 << endl;
+      FloorNode *floor = root->children[i];
+      vector<vector<string>> room_matrix;
+      room_matrix.push_back(vector<string>{"Room No", "Type", "Created By"});
+      RoomNode *temp_room = floor->rooms;
+
+      while (temp_room)
+      {
+        // find the name of the user, who created the room
+        string name = "";
+        for (const vector<string> &row : users)
+        {
+          // row[0] is id, row[1] is the username of the user
+          if (row[0] == to_string(temp_room->user_id))
+            name = row[1];
+        }
+
+        vector<string> room_values = {
+            to_string(temp_room->room_no),
+            typeToString(temp_room->type),
+            name,
+        };
+        room_matrix.push_back(room_values);
+        temp_room = temp_room->next;
+      }
+      show_as_table_vector(room_matrix);
+    }
+
+    cout << endl;
+  }
+
+  void
+  add_room(int which_floor, RoomType type = SINGLE)
   {
     if (which_floor > root->children.size() || which_floor < 1)
     {
@@ -140,27 +215,29 @@ public:
     RoomNode *curr_room = current_floor->rooms;
     if (!curr_room)
     {
-      RoomNode *new_room = new RoomNode(1, UserActions::current_user->id);
+      RoomNode *new_room = new RoomNode(1, UserActions::current_user->id, type);
       current_floor->rooms = new_room;
 
       room_values.push_back(to_string(new_room->room_no));
       room_values.push_back(to_string(new_room->user_id));
+      room_values.push_back(typeToString(new_room->type));
       room_values.push_back(to_string(which_floor));
     }
     else
     {
       while (curr_room->next != NULL)
         curr_room = curr_room->next;
-      RoomNode *new_room = new RoomNode(curr_room->room_no + 1, UserActions::current_user->id);
+      RoomNode *new_room = new RoomNode(curr_room->room_no + 1, UserActions::current_user->id, type);
       curr_room->next = new_room;
 
       room_values.push_back(to_string(new_room->room_no));
       room_values.push_back(to_string(new_room->user_id));
+      room_values.push_back(typeToString(new_room->type));
       room_values.push_back(to_string(which_floor));
     }
 
     // room values are
-    // ROOM NO, USER_ID, FLOOR_NO
+    // ROOM NO, USER_ID, TYPE, FLOOR_NO
     Persistor::save(ROOM_TABLE_NAME, room_values);
   }
 };
