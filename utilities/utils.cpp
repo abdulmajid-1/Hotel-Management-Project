@@ -106,7 +106,7 @@ bool str_includes(const string &str, const string &substr)
   return false;
 }
 
-void show_as_table_vector(vector<vector<string>> matrix)
+void show_as_table(vector<vector<string>> matrix)
 {
   int rows = matrix.size();
   int cols = matrix[0].size();

@@ -16,4 +16,4 @@ string joins(vector<string> arr, string separator);
 
 vector<string> split_into_vector(string str, char separator);
 
-void show_as_table_vector(vector<vector<string>> matrix);
+void show_as_table(vector<vector<string>> matrix);

@@ -190,14 +190,13 @@ public:
         room_matrix.push_back(room_values);
         temp_room = temp_room->next;
       }
-      show_as_table_vector(room_matrix);
+      show_as_table(room_matrix);
     }
 
     cout << endl;
   }
 
-  void
-  add_room(int which_floor, RoomType type = SINGLE)
+  void add_room(int which_floor, RoomType type = SINGLE)
   {
     if (which_floor > root->children.size() || which_floor < 1)
     {
@@ -239,5 +238,64 @@ public:
     // room values are
     // ROOM NO, USER_ID, TYPE, FLOOR_NO
     Persistor::save(ROOM_TABLE_NAME, room_values);
+  }
+
+  void update_room(int floor_no, int room_no, RoomType new_room_type)
+  {
+    // find the room with this floor_no and room_no
+    RoomNode *founded = NULL;
+    FloorNode *curr_floor = NULL;
+
+    for (int i = 0; i < root->children.size(); i++)
+    {
+      if (root->children[i]->floor_no == floor_no)
+        curr_floor = root->children[i];
+    }
+
+    if (!curr_floor)
+    {
+      cout << "Floor #" << floor_no << " not found." << endl;
+      return;
+    }
+
+    RoomNode *curr_room = curr_floor->rooms;
+    while (curr_room)
+    {
+      if (curr_room->room_no == room_no)
+      {
+        founded = curr_room;
+        break;
+      }
+      curr_room = curr_room->next;
+    }
+
+    if (!curr_room)
+    {
+      cout << "Room #" << room_no << " not found." << endl;
+      return;
+    }
+
+    curr_room->type = new_room_type;
+
+    vector<vector<string>> rooms_serialized;
+    // do it for all the floors
+    for (int i = 0; i < root->children.size(); i++)
+    {
+      RoomNode *curr_room = root->children[i]->rooms;
+      while (curr_room)
+      {
+        vector<string> room_values;
+        room_values.push_back(to_string(curr_room->room_no));
+        room_values.push_back(to_string(curr_room->user_id));
+        room_values.push_back(typeToString(curr_room->type));
+        room_values.push_back(to_string(i + 1));
+
+        rooms_serialized.push_back(room_values);
+
+        curr_room = curr_room->next;
+      }
+    }
+
+    Persistor::save_all(ROOM_TABLE_NAME, rooms_serialized);
   }
 };

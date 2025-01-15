@@ -5,7 +5,7 @@ using namespace std;
 
 void show_admin_options()
 {
-  vector<string> options = {"Create Floor", "Add room", "Show All Floors", "Show All Rooms", "Signout"};
+  vector<string> options = {"Create Floor", "Add room", "Show All Floors", "Show All Rooms", "Update Room", "Signout", "Clear"};
   for (int i = 0; i < options.size(); i++)
     cout << char(i + 'a') << ": " << options[i] << endl;
 }
@@ -102,8 +102,37 @@ int main()
           break;
 
         case 'e':
+          cout << "Enter floor no: ";
+          int floor_no;
+          int room_no;
+          cin >> floor_no;
+          cout << "Enter room no: ";
+          cin >> room_no;
+          cout << "Enter new Room Type: " << endl;
+          cout << "'S' for SINGLE, 'D' for DOUBLE, 'U' for SUITE: ";
+          char s;
+          cin >> s;
+          s = tolower(s);
+          RoomType roomType;
+          if (s == 's')
+            roomType = SINGLE;
+          else if (s == 'd')
+            roomType = DOUBLE;
+          else
+            roomType = SUITE;
+
+          hotel.update_room(floor_no, room_no, roomType);
+          cout << "Floor #" << floor_no << ", Room_no #" << room_no << " updated" << endl;
+
+          break;
+
+        case 'f':
           UserActions::signout();
           manage_auth();
+          break;
+
+        case 'g':
+          clear();
           break;
 
         case 'q':
