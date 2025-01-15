@@ -201,16 +201,17 @@ public:
   {
     UserActions::require_admin();
 
-    if (which_floor > root->children.size() || which_floor < 1)
+    FloorNode *current_floor = NULL;
+    for (int i = 0; i < root->children.size(); i++)
     {
-      cout << "Floor doesn't exist." << endl;
-      return;
+      if (root->children[i]->floor_no == which_floor)
+        current_floor = root->children[i];
     }
 
-    int counter = 0;
-    FloorNode *current_floor = root->children[counter];
-    while (counter < root->children.size() && counter < which_floor - 1)
-      current_floor = root->children[++counter];
+    if (!current_floor)
+    {
+      cout << "Floor #" << which_floor << " doesn't exist" << endl;
+    }
 
     vector<string> room_values;
 
@@ -293,7 +294,7 @@ public:
         room_values.push_back(to_string(curr_room->room_no));
         room_values.push_back(to_string(curr_room->user_id));
         room_values.push_back(typeToString(curr_room->type));
-        room_values.push_back(to_string(i + 1));
+        room_values.push_back(to_string(root->children[i]->floor_no));
 
         rooms_serialized.push_back(room_values);
 
