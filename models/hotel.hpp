@@ -160,6 +160,7 @@ public:
 
   void show_all_rooms_admin()
   {
+    UserActions::require_admin();
     vector<vector<string>> users = Persistor::get_table("users");
 
     cout << endl;
@@ -198,6 +199,8 @@ public:
 
   void add_room(int which_floor, RoomType type = SINGLE)
   {
+    UserActions::require_admin();
+
     if (which_floor > root->children.size() || which_floor < 1)
     {
       cout << "Floor doesn't exist." << endl;
@@ -242,6 +245,8 @@ public:
 
   void update_room(int floor_no, int room_no, RoomType new_room_type)
   {
+    UserActions::require_admin();
+
     // find the room with this floor_no and room_no
     RoomNode *founded = NULL;
     FloorNode *curr_floor = NULL;
