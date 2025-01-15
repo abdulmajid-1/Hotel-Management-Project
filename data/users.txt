@@ -1,2 +1,3 @@
 1,umer,umer,ADMIN
 2,ali,ali,ADMIN
+3,majid,password,USER

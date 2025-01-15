@@ -10,6 +10,13 @@ void show_admin_options()
     cout << char(i + 'a') << ": " << options[i] << endl;
 }
 
+void show_user_options()
+{
+  vector<string> options = {"Show All Rooms", "Show Rooms in Dates", "Book Room", "Signout", "Clear"};
+  for (int i = 0; i < options.size(); i++)
+    cout << char(i + 'a') << ": " << options[i] << endl;
+}
+
 void manage_auth()
 {
   // Sign in or Sign Up till current_user is NULL
@@ -39,6 +46,141 @@ void manage_auth()
   }
 }
 
+void handle_admin_functionality(Hotel &hotel)
+{
+  char c = '\0';
+  while (tolower(c) != 'q')
+  {
+    cout << "Press S to show options and Q to quit: ";
+    cin >> c;
+    c = tolower(c);
+
+    switch (c)
+    {
+    case 's':
+      show_admin_options();
+      break;
+
+    case 'a':
+      hotel.add_floor();
+      cout << "New Floor has been added." << endl;
+      break;
+
+    case 'b':
+      int n;
+      cout << "Enter Floor no.: ";
+      cin >> n;
+      cout << "Enter room type." << endl;
+      cout << "'S' for SINGLE, 'D' for DOUBLE, 'U' for SUITE: ";
+      char c;
+      cin >> c;
+      c = tolower(c);
+      RoomType type;
+      if (c == 's')
+        type = SINGLE;
+      else if (c == 'd')
+        type = DOUBLE;
+      else if (c == 'u')
+        type = SUITE;
+      hotel.add_room(n, type);
+      cout << "Room is added to floor #" << n << endl;
+      break;
+
+    case 'c':
+      hotel.show_all_floors();
+      break;
+
+    case 'd':
+      hotel.show_all_rooms_admin();
+      break;
+
+    case 'e':
+      cout << "Enter floor no: ";
+      int floor_no;
+      int room_no;
+      cin >> floor_no;
+      cout << "Enter room no: ";
+      cin >> room_no;
+      cout << "Enter new Room Type: " << endl;
+      cout << "'S' for SINGLE, 'D' for DOUBLE, 'U' for SUITE: ";
+      char s;
+      cin >> s;
+      s = tolower(s);
+      RoomType roomType;
+      if (s == 's')
+        roomType = SINGLE;
+      else if (s == 'd')
+        roomType = DOUBLE;
+      else
+        roomType = SUITE;
+
+      hotel.update_room(floor_no, room_no, roomType);
+      cout << "Floor #" << floor_no << ", Room_no #" << room_no << " updated" << endl;
+
+      break;
+
+    case 'f':
+      UserActions::signout();
+      manage_auth();
+      break;
+
+    case 'g':
+      clear();
+      break;
+
+    case 'q':
+      exit(0);
+
+    default:
+      cout << "Invalid option. Try again." << endl;
+      break;
+    }
+  }
+}
+
+void handle_user_functionality(Hotel &hotel)
+{
+  char c = '\0';
+  while (tolower(c) != 'q')
+  {
+    cout << "Press S to show options and Q to quit: ";
+    cin >> c;
+    c = tolower(c);
+
+    switch (c)
+    {
+    case 's':
+      show_user_options();
+      break;
+
+    case 'a':
+      break;
+
+    case 'b':
+      break;
+
+    case 'c':
+      break;
+
+    case 'd':
+      UserActions::signout();
+      manage_auth();
+      break;
+
+    case 'e':
+      clear();
+      break;
+
+    case 'q':
+      exit(0);
+
+    default:
+      cout << "Invalid option. Try again." << endl;
+      break;
+    }
+  }
+}
+
 int main()
 {
   // get the persisted data from the disk
@@ -47,114 +189,26 @@ int main()
   Hotel hotel;
   manage_auth();
 
-  // reaching here means, we have successfully signed in.
-  // now the user can be admin or user
-  // first handle the admin user
-  // Reaching here means we have successfully signed in
-  if (UserActions::current_user && UserActions::current_user->role == ADMIN)
+  try
   {
-    char c = '\0';
-    while (tolower(c) != 'q')
-    {
-      try
-      {
-        cout << "Press S to show options and Q to quit: ";
-        cin >> c;
-        c = tolower(c);
-
-        switch (c)
-        {
-        case 's':
-          show_admin_options();
-          break;
-
-        case 'a':
-          hotel.add_floor();
-          cout << "New Floor has been added." << endl;
-          break;
-
-        case 'b':
-          int n;
-          cout << "Enter Floor no.: ";
-          cin >> n;
-          cout << "Enter room type." << endl;
-          cout << "'S' for SINGLE, 'D' for DOUBLE, 'U' for SUITE: ";
-          char c;
-          cin >> c;
-          c = tolower(c);
-          RoomType type;
-          if (c == 's')
-            type = SINGLE;
-          else if (c == 'd')
-            type = DOUBLE;
-          else if (c == 'u')
-            type = SUITE;
-          hotel.add_room(n, type);
-          cout << "Room is added to floor #" << n << endl;
-          break;
-
-        case 'c':
-          hotel.show_all_floors();
-          break;
-
-        case 'd':
-          hotel.show_all_rooms_admin();
-          break;
-
-        case 'e':
-          cout << "Enter floor no: ";
-          int floor_no;
-          int room_no;
-          cin >> floor_no;
-          cout << "Enter room no: ";
-          cin >> room_no;
-          cout << "Enter new Room Type: " << endl;
-          cout << "'S' for SINGLE, 'D' for DOUBLE, 'U' for SUITE: ";
-          char s;
-          cin >> s;
-          s = tolower(s);
-          RoomType roomType;
-          if (s == 's')
-            roomType = SINGLE;
-          else if (s == 'd')
-            roomType = DOUBLE;
-          else
-            roomType = SUITE;
-
-          hotel.update_room(floor_no, room_no, roomType);
-          cout << "Floor #" << floor_no << ", Room_no #" << room_no << " updated" << endl;
-
-          break;
-
-        case 'f':
-          UserActions::signout();
-          manage_auth();
-          break;
-
-        case 'g':
-          clear();
-          break;
-
-        case 'q':
-          exit(0);
-
-        default:
-          cout << "Invalid option. Try again." << endl;
-          break;
-        }
-      }
-
-      catch (const char *&msg)
-      {
-        cerr << "Error: " << msg << endl;
-      }
-      catch (const exception &e)
-      {
-        cerr << "Exception: " << e.what() << endl;
-        exit(1);
-      }
-    }
-
-    return 0;
+    // reaching here means, we have successfully signed in.
+    // now the user can be admin or user
+    // first handle the admin user
+    // Reaching here means we have successfully signed in
+    if (UserActions::current_user && UserActions::current_user->role == ADMIN)
+      handle_admin_functionality(hotel);
+    else
+      handle_user_functionality(hotel);
   }
+  catch (const char *&msg)
+  {
+    cerr << "Error: " << msg << endl;
+  }
+  catch (const exception &e)
+  {
+    cerr << "Exception: " << e.what() << endl;
+    exit(1);
+  }
+
+  return 0;
 }
