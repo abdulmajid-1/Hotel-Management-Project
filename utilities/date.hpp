@@ -13,6 +13,7 @@ class Date
 public:
   static long getCurrentTimestamp();
   static long convertToTimestamp(const string &dateStr);
+  static long getMillisecondsSinceMidnight();
 };
 
 long Date::getCurrentTimestamp()
@@ -42,10 +43,35 @@ long Date::convertToTimestamp(const string &dateStr)
     throw runtime_error("Failed to convert time.");
   }
 
-  cout << timeSinceEpoch << endl;
-
   // Convert to milliseconds
   long millisecondsSinceEpoch = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::from_time_t(timeSinceEpoch).time_since_epoch()).count();
 
   return millisecondsSinceEpoch;
+}
+
+long Date::getMillisecondsSinceMidnight()
+{
+  // Get current time
+  auto now = chrono::system_clock::now();
+  time_t nowTimeT = chrono::system_clock::to_time_t(now);
+
+  // Extract today's date and reset time to 12:00 AM
+  tm tm = *localtime(&nowTimeT);
+  tm.tm_hour = 0;
+  tm.tm_min = 0;
+  tm.tm_sec = 0;
+  tm.tm_isdst = -1;
+
+  time_t midnightTimeT = mktime(&tm);
+
+  if (midnightTimeT == -1)
+  {
+    throw runtime_error("Failed to calculate midnight time.");
+  }
+
+  // Calculate milliseconds since midnight
+  auto midnight = chrono::system_clock::from_time_t(midnightTimeT);
+  auto millisecondsSinceMidnight = chrono::duration_cast<chrono::milliseconds>(now - midnight).count();
+
+  return millisecondsSinceMidnight;
 }

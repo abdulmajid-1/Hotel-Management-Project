@@ -364,6 +364,37 @@ public:
       return;
     }
 
+    // now check if the starting date is >= today
+    if (Date::convertToTimestamp(start_date) < Date::getCurrentTimestamp() - Date::getMillisecondsSinceMidnight())
+    {
+      cout << "Error: Please enter valid starting that has not Passed." << endl;
+      return;
+    }
+    // now check if ending date is >= to starting date
+    if (Date::convertToTimestamp(end_date) < Date::convertToTimestamp(start_date))
+    {
+      cout << "Error: Please enter Ending Date that is greater than Starting Date" << endl;
+      return;
+    }
+
+    // Now check if between these dates (starting and ending), the room is already
+    // booked or not, if room is booked between these dates, don't allow booking
+    vector<Booking> curr_room_bookings = Booking::get_booking_by_floor_and_room_no(floor_no, room_no);
+
+    for (const Booking &curr_room_booking : curr_room_bookings)
+    {
+      if (
+          Date::convertToTimestamp(start_date) <= Date::convertToTimestamp(curr_room_booking.end_date) &&
+          Date::convertToTimestamp(end_date) >= Date::convertToTimestamp(curr_room_booking.start_date))
+      {
+        cout << "Sorry. Room is already booked between these dates." << endl;
+        return;
+      }
+    }
+
+    // if all the checks are passed, create the booking
     (new Booking(floor_no, room_no, UserActions::current_user->id, start_date, end_date))->save();
+
+    cout << "Your Room is booked Successfully." << endl;
   }
 };
