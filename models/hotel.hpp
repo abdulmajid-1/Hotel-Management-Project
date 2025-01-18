@@ -527,4 +527,74 @@ public:
       }
     }
   }
+
+  void delete_booking(int booking_id)
+  {
+    UserActions::require_admin();
+
+    vector<Booking> all_bookings = Booking::get_all_bookings();
+    vector<Booking> new_bookings;
+
+    bool found = false;
+
+    for (Booking booking : all_bookings)
+    {
+      if (booking.booking_id != booking_id)
+        new_bookings.push_back(booking);
+      else
+        found = true;
+    }
+
+    if (found)
+    {
+      Booking::save_all(new_bookings);
+      cout << "Booking with id: " << booking_id << " deleted." << endl;
+    }
+    else
+      cout << "Booking with id: " << booking_id << " not found." << endl;
+  }
+
+  void delete_user(int user_id)
+  {
+    UserActions::require_admin();
+    if (UserActions::current_user->id == user_id)
+    {
+      cout << "You cannot delete Yourself." << endl;
+      return;
+    }
+
+    vector<User *> users = UserActions::get_all_users();
+    vector<User> new_users;
+
+    bool found = false;
+
+    for (User *user : users)
+    {
+      if (user->id != user_id)
+        new_users.push_back(*user);
+      else
+      {
+        if (user->role == ADMIN)
+        {
+          cout << "You cannot delete an ADMIN." << endl;
+          return;
+        }
+        found = true;
+      }
+    }
+
+    if (found)
+    {
+      UserActions::save_all(new_users);
+      cout << "User with id: " << user_id << " deleted." << endl;
+      UserActions::populate_users();
+      // now delete all its bookings, we don't need to delete its rooms because
+      // rooms are created by admin, and deleting admins are not allowed
+      vector<Booking> user_bookings = Booking::get_booking_by_user_id(user_id);
+      for (const Booking &booking : user_bookings)
+        delete_booking(booking.booking_id);
+    }
+    else
+      cout << "User with id: " << user_id << " not found." << endl;
+  }
 };

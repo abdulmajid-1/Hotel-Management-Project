@@ -131,11 +131,18 @@ void handle_admin_functionality(Hotel &hotel)
       break;
 
     case 'h':
-      // DELETE BOOKING
+      cout << "Enter booking id: ";
+      int booking_id;
+      cin >> booking_id;
+      hotel.delete_booking(booking_id);
       break;
 
     case 'i':
-      // DELETE USER
+      // DELETE THE USER, AND ITS BOOKINGS.
+      cout << "Enter user id: ";
+      int user_id;
+      cin >> user_id;
+      hotel.delete_user(user_id);
       break;
 
     case 'j':

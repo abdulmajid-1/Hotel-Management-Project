@@ -42,6 +42,7 @@ public:
     Persistor::save(BOOKING_TABLE_NAME, row);
   }
 
+  static void save_all(vector<Booking> &bookings);
   static const string BOOKING_TABLE_NAME_STATIC;
   static vector<Booking> get_all_bookings();
   static vector<Booking> get_booking_by_floor_and_room_no(int floor_no, int room_no);
@@ -49,6 +50,19 @@ public:
 };
 
 const string Booking::BOOKING_TABLE_NAME_STATIC = "bookings";
+
+void Booking::save_all(vector<Booking> &bookings)
+{
+  vector<vector<string>> rows;
+  for (const Booking &booking : bookings)
+  {
+    vector<string> row = {to_string(booking.booking_id), to_string(booking.floor_no), to_string(booking.room_no), to_string(booking.user_id), booking.start_date, booking.end_date};
+
+    rows.push_back(row);
+  }
+
+  Persistor::save_all(BOOKING_TABLE_NAME_STATIC, rows);
+}
 
 vector<Booking> Booking::get_all_bookings()
 {

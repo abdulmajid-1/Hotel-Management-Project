@@ -34,6 +34,7 @@ public:
   static void require_auth();
   static void require_admin();
   static vector<User *> get_all_users();
+  static void save_all(vector<User> users);
 };
 
 string roleToString(UserRole role);

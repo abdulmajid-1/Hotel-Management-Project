@@ -7,6 +7,7 @@ const string UserActions::USER_TABLE_NAME = "users";
 // populating data from the disk at the start of application
 void UserActions::populate_users()
 {
+  vector<User *> users;
   vector<vector<string>> data = Persistor::get_table(USER_TABLE_NAME);
   for (vector<string> row : data)
   {
@@ -14,6 +15,7 @@ void UserActions::populate_users()
     user->role = row[3] == "ADMIN" ? ADMIN : USER;
     users.push_back(user);
   }
+  UserActions::users = users;
 }
 
 vector<User *> UserActions::get_all_users() { return users; }
@@ -86,4 +88,17 @@ void UserActions::require_admin()
 {
   if (!current_user || current_user->role != ADMIN)
     throw "Only Admin has Access";
+}
+
+void UserActions::save_all(vector<User> users)
+{
+  vector<vector<string>> rows;
+  for (const User &user : users)
+  {
+    vector<string> row = {to_string(user.id), user.user_name, user.password, roleToString(user.role)};
+
+    rows.push_back(row);
+  }
+
+  Persistor::save_all(USER_TABLE_NAME, rows);
 }
