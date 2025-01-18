@@ -3,6 +3,9 @@
 #include "models/hotel.hpp"
 using namespace std;
 
+// forward declaration for recursive main call
+int main();
+
 void show_admin_options()
 {
   vector<string> options = {"Create Floor", "Add room", "Show All Floors", "Show All Rooms", "Update Room", "Signout", "Clear"};
@@ -121,7 +124,7 @@ void handle_admin_functionality(Hotel &hotel)
 
     case 'f':
       UserActions::signout();
-      manage_auth();
+      main();
       break;
 
     case 'g':
@@ -160,6 +163,11 @@ void handle_user_functionality(Hotel &hotel)
       break;
 
     case 'b':
+      cout << "Enter staring Date (DD/MM/YYYY): ";
+      cin >> start_date;
+      cout << "Enter end Date (DD/MM/YYYY): ";
+      cin >> end_date;
+      hotel.show_rooms_available(start_date, end_date);
       break;
 
     case 'c':
@@ -185,7 +193,7 @@ void handle_user_functionality(Hotel &hotel)
 
     case 'e':
       UserActions::signout();
-      manage_auth();
+      main();
       break;
 
     case 'f':

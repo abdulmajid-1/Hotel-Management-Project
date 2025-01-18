@@ -189,7 +189,6 @@ public:
     cout << endl;
     for (int i = 0; i < root->children.size(); i++)
     {
-      cout << "Floor #" << i + 1 << endl;
       FloorNode *floor = root->children[i];
       vector<vector<string>> room_matrix;
       room_matrix.push_back(vector<string>{"Room No", "Type", "Created By"});
@@ -214,7 +213,11 @@ public:
         room_matrix.push_back(room_values);
         temp_room = temp_room->next;
       }
-      show_as_table(room_matrix);
+      if (room_matrix.size() > 1)
+      {
+        cout << "Floor #" << root->children[i]->floor_no << endl;
+        show_as_table(room_matrix);
+      }
     }
 
     cout << endl;
@@ -227,7 +230,6 @@ public:
     cout << endl;
     for (int i = 0; i < root->children.size(); i++)
     {
-      cout << "Floor #" << i + 1 << endl;
       FloorNode *floor = root->children[i];
       vector<vector<string>> room_matrix;
       room_matrix.push_back(vector<string>{"Room No", "Type"});
@@ -242,7 +244,11 @@ public:
         room_matrix.push_back(room_values);
         temp_room = temp_room->next;
       }
-      show_as_table(room_matrix);
+      if (room_matrix.size() > 1)
+      {
+        cout << "Floor #" << root->children[i]->floor_no << endl;
+        show_as_table(room_matrix);
+      }
     }
 
     cout << endl;
@@ -438,5 +444,45 @@ public:
     }
 
     show_as_table(matrix);
+  }
+
+  void show_rooms_available(string start_date, string end_date)
+  {
+    for (int i = 0; i < root->children.size(); i++)
+    {
+      vector<RoomNode *> available_rooms;
+
+      RoomNode *curr_room = root->children[i]->rooms;
+      while (curr_room)
+      {
+        vector<Booking> bookings = Booking::get_booking_by_floor_and_room_no(root->children[i]->floor_no, curr_room->room_no);
+
+        // it needs to be passed by all bookings.
+        bool is_passed = true;
+
+        for (const Booking &booking : bookings)
+        {
+          // if there is only one booking at that date, don't show the room
+          if (Date::convertToTimestamp(start_date) <= Date::convertToTimestamp(booking.end_date))
+            is_passed = true;
+        }
+
+        if (is_passed)
+          available_rooms.push_back(curr_room);
+
+        curr_room = curr_room->next;
+      }
+
+      if (available_rooms.size() != 0)
+      {
+        cout << "Floor #" << root->children[i]->floor_no << endl;
+        vector<vector<string>> matrix;
+        matrix.push_back(vector<string>{"Room NO.", "Type"});
+        for (const RoomNode *room : available_rooms)
+          matrix.push_back(vector<string>{to_string(room->room_no), typeToString(room->type)});
+
+        show_as_table(matrix);
+      }
+    }
   }
 };
