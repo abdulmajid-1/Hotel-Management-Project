@@ -146,6 +146,8 @@ void handle_user_functionality(Hotel &hotel)
     cout << "Press S to show options and Q to quit: ";
     cin >> c;
     c = tolower(c);
+    string start_date;
+    string end_date;
 
     switch (c)
     {
@@ -154,12 +156,28 @@ void handle_user_functionality(Hotel &hotel)
       break;
 
     case 'a':
+      hotel.show_all_rooms_user();
       break;
 
     case 'b':
       break;
 
     case 'c':
+      cout << "Enter floor #: ";
+      int floor_no;
+      cin >> floor_no;
+
+      cout << "Enter room #: ";
+      int room_no;
+      cin >> room_no;
+
+      cout << "Enter staring Date (DD/MM/YYYY): ";
+      cin >> start_date;
+      cout << "Enter end Date (DD/MM/YYYY): ";
+      cin >> end_date;
+
+      hotel.book_room(floor_no, room_no, start_date, end_date);
+
       break;
 
     case 'd':

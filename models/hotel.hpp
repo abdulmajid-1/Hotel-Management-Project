@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 #include "user.hpp"
+#include "booking.hpp"
+#include "../utilities/date.hpp"
 using namespace std;
 
 enum RoomType
@@ -197,6 +199,34 @@ public:
     cout << endl;
   }
 
+  void show_all_rooms_user()
+  {
+    vector<vector<string>> users = Persistor::get_table("users");
+
+    cout << endl;
+    for (int i = 0; i < root->children.size(); i++)
+    {
+      cout << "Floor #" << i + 1 << endl;
+      FloorNode *floor = root->children[i];
+      vector<vector<string>> room_matrix;
+      room_matrix.push_back(vector<string>{"Room No", "Type"});
+      RoomNode *temp_room = floor->rooms;
+
+      while (temp_room)
+      {
+        vector<string> room_values = {
+            to_string(temp_room->room_no),
+            typeToString(temp_room->type),
+        };
+        room_matrix.push_back(room_values);
+        temp_room = temp_room->next;
+      }
+      show_as_table(room_matrix);
+    }
+
+    cout << endl;
+  }
+
   void add_room(int which_floor, RoomType type = SINGLE)
   {
     UserActions::require_admin();
@@ -303,5 +333,37 @@ public:
     }
 
     Persistor::save_all(ROOM_TABLE_NAME, rooms_serialized);
+  }
+
+  void book_room(int floor_no, int room_no, string start_date, string end_date)
+  {
+    UserActions::require_auth();
+
+    // first find the floor
+    FloorNode *found_floor = NULL;
+    for (int i = 0; i < root->children.size(); i++)
+    {
+      if (root->children[i]->floor_no == floor_no)
+        found_floor = root->children[i];
+    }
+
+    if (!found_floor)
+    {
+      cout << "Floor #" << floor_no << " not found." << endl;
+      return;
+    }
+
+    // find the room
+    RoomNode *found_room = found_floor->rooms;
+    while (found_room && found_room->room_no != room_no)
+      found_room = found_room->next;
+
+    if (!found_room)
+    {
+      cout << "Room #" << room_no << " not found." << endl;
+      return;
+    }
+
+    (new Booking(floor_no, room_no, UserActions::current_user->id, start_date, end_date))->save();
   }
 };
