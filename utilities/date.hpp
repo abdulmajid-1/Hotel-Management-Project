@@ -69,7 +69,7 @@ long Date::getMillisecondsSinceMidnight()
 
   // Calculate milliseconds since midnight
   auto midnight = chrono::system_clock::from_time_t(midnightTimeT);
-  auto millisecondsSinceMidnight = chrono::duration_cast<chrono::milliseconds>(now - midnight).count();
+  long millisecondsSinceMidnight = chrono::duration_cast<chrono::milliseconds>(now - midnight).count();
 
   return millisecondsSinceMidnight;
 }

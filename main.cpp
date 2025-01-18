@@ -231,11 +231,11 @@ int main()
   }
   catch (const char *&msg)
   {
-    cerr << "Error: " << msg << endl;
+    cout << "Error: " << msg << endl;
   }
   catch (const exception &e)
   {
-    cerr << "Exception: " << e.what() << endl;
+    cout << "Exception: " << e.what() << endl;
     exit(1);
   }
 
