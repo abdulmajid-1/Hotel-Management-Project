@@ -394,7 +394,7 @@ public:
     // now check if the starting date is >= today
     if (Date::convertToTimestamp(start_date) < Date::getCurrentTimestamp() - Date::getMillisecondsSinceMidnight())
     {
-      cout << "Error: Please enter valid starting that has not Passed." << endl;
+      cout << "Error: Please enter valid starting date that has not Passed." << endl;
       return;
     }
     // now check if ending date is >= to starting date
@@ -463,8 +463,10 @@ public:
         for (const Booking &booking : bookings)
         {
           // if there is only one booking at that date, don't show the room
-          if (Date::convertToTimestamp(start_date) <= Date::convertToTimestamp(booking.end_date))
-            is_passed = true;
+          if (
+              Date::convertToTimestamp(start_date) <= Date::convertToTimestamp(booking.end_date) &&
+              Date::convertToTimestamp(end_date) >= Date::convertToTimestamp(booking.start_date))
+            is_passed = false;
         }
 
         if (is_passed)
