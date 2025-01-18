@@ -33,4 +33,7 @@ public:
   static void signout();
   static void require_auth();
   static void require_admin();
+  static vector<User *> get_all_users();
 };
+
+string roleToString(UserRole role);

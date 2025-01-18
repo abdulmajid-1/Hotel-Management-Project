@@ -425,17 +425,41 @@ public:
     cout << "Your Room is booked Successfully." << endl;
   }
 
+  void show_all_bookings()
+  {
+    UserActions::require_admin();
+    vector<Booking> all_bookings = Booking::get_all_bookings();
+
+    vector<vector<string>> matrix;
+    matrix.push_back(vector<string>{"Booking ID", "Floor No.", "Room No.", "User ID", "Start Date", "End Date"});
+
+    for (const Booking &booking : all_bookings)
+    {
+      matrix.push_back(vector<string>{
+          to_string(booking.booking_id),
+          to_string(booking.floor_no),
+          to_string(booking.room_no),
+          to_string(booking.user_id),
+          booking.start_date,
+          booking.end_date,
+      });
+    }
+
+    show_as_table(matrix);
+  }
+
   void show_my_bookings()
   {
     UserActions::require_auth();
     vector<Booking> bookings = Booking::get_booking_by_user_id(UserActions::current_user->id);
 
     vector<vector<string>> matrix;
-    matrix.push_back(vector<string>{"Floor No.", "Room No.", "Start Date", "End Date"});
+    matrix.push_back(vector<string>{"Booking ID", "Floor No.", "Room No.", "Start Date", "End Date"});
 
     for (const Booking &booking : bookings)
     {
       matrix.push_back(vector<string>{
+          to_string(booking.booking_id),
           to_string(booking.floor_no),
           to_string(booking.room_no),
           booking.start_date,
@@ -444,6 +468,22 @@ public:
     }
 
     show_as_table(matrix);
+  }
+
+  void show_all_users()
+  {
+    UserActions::require_admin();
+    vector<User *> users = UserActions::get_all_users();
+
+    vector<vector<string>> user_matrix;
+    user_matrix.push_back(vector<string>{"ID", "Username", "Role"});
+
+    for (const User *user : users)
+    {
+      user_matrix.push_back(vector<string>{to_string(user->id), user->user_name, roleToString(user->role)});
+    }
+
+    show_as_table(user_matrix);
   }
 
   void show_rooms_available(string start_date, string end_date)

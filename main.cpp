@@ -8,7 +8,7 @@ int main();
 
 void show_admin_options()
 {
-  vector<string> options = {"Create Floor", "Add room", "Show All Floors", "Show All Rooms", "Update Room", "Signout", "Clear"};
+  vector<string> options = {"Create Floor", "Add room", "Show All Floors", "Show All Rooms", "Update Room", "Show All Users", "Show All Bookings", "Delete Booking", "Delete User", "Signout", "Clear"};
   for (int i = 0; i < options.size(); i++)
     cout << char(i + 'a') << ": " << options[i] << endl;
 }
@@ -123,11 +123,26 @@ void handle_admin_functionality(Hotel &hotel)
       break;
 
     case 'f':
-      UserActions::signout();
-      main();
+      hotel.show_all_users();
       break;
 
     case 'g':
+      hotel.show_all_bookings();
+      break;
+
+    case 'h':
+      // DELETE BOOKING
+      break;
+
+    case 'i':
+      // DELETE USER
+      break;
+
+    case 'j':
+      UserActions::signout();
+      return;
+
+    case 'k':
       clear();
       break;
 
@@ -193,8 +208,7 @@ void handle_user_functionality(Hotel &hotel)
 
     case 'e':
       UserActions::signout();
-      main();
-      break;
+      return;
 
     case 'f':
       clear();
@@ -216,27 +230,38 @@ int main()
   UserActions::populate_users();
 
   Hotel hotel;
-  manage_auth();
+  bool running = true;
 
-  try
+  while (running)
   {
-    // reaching here means, we have successfully signed in.
-    // now the user can be admin or user
-    // first handle the admin user
-    // Reaching here means we have successfully signed in
-    if (UserActions::current_user && UserActions::current_user->role == ADMIN)
-      handle_admin_functionality(hotel);
+    // Manage authentication
+    manage_auth();
+
+    try
+    {
+      // Handle functionality based on the role
+      if (UserActions::current_user && UserActions::current_user->role == ADMIN)
+        handle_admin_functionality(hotel);
+      else
+        handle_user_functionality(hotel);
+    }
+    catch (const char *&msg)
+    {
+      cout << "Error: " << msg << endl;
+    }
+    catch (const exception &e)
+    {
+      cout << "Exception: " << e.what() << endl;
+      exit(1);
+    }
+
+    // if signout is called, means current_user will be null, so keep running
+    if (!UserActions::current_user)
+      cout << "User signed out. Returning to main menu.\n";
+    // if there is current_user, but we still reach here, means it is the end of
+    // application, end it
     else
-      handle_user_functionality(hotel);
-  }
-  catch (const char *&msg)
-  {
-    cout << "Error: " << msg << endl;
-  }
-  catch (const exception &e)
-  {
-    cout << "Exception: " << e.what() << endl;
-    exit(1);
+      running = false;
   }
 
   return 0;

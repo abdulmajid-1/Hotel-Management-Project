@@ -16,6 +16,8 @@ void UserActions::populate_users()
   }
 }
 
+vector<User *> UserActions::get_all_users() { return users; }
+
 void UserActions::sign_in(string user_name, string password)
 {
   for (User *user : users)
