@@ -4,7 +4,7 @@
 #include <sstream>
 #include <iomanip>
 
-using namespace std;
+using namespace std::chrono;
 
 class Date
 {
@@ -16,8 +16,8 @@ public:
 
 long Date::getCurrentTimestamp()
 {
-  auto now = std::chrono::system_clock::now();
-  auto millisecondsSinceEpoch = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+  auto now = system_clock::now();
+  auto millisecondsSinceEpoch = duration_cast<milliseconds>(now.time_since_epoch()).count();
 
   return millisecondsSinceEpoch;
 }
@@ -42,7 +42,7 @@ long Date::convertToTimestamp(const string &dateStr)
   }
 
   // Convert to milliseconds
-  long millisecondsSinceEpoch = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::from_time_t(timeSinceEpoch).time_since_epoch()).count();
+  long millisecondsSinceEpoch = duration_cast<milliseconds>(system_clock::from_time_t(timeSinceEpoch).time_since_epoch()).count();
 
   return millisecondsSinceEpoch;
 }
@@ -50,8 +50,8 @@ long Date::convertToTimestamp(const string &dateStr)
 long Date::getMillisecondsSinceMidnight()
 {
   // Get current time
-  auto now = chrono::system_clock::now();
-  time_t nowTimeT = chrono::system_clock::to_time_t(now);
+  auto now = system_clock::now();
+  time_t nowTimeT = system_clock::to_time_t(now);
 
   // Extract today's date and reset time to 12:00 AM
   tm tm = *localtime(&nowTimeT);
@@ -68,8 +68,8 @@ long Date::getMillisecondsSinceMidnight()
   }
 
   // Calculate milliseconds since midnight
-  auto midnight = chrono::system_clock::from_time_t(midnightTimeT);
-  long millisecondsSinceMidnight = chrono::duration_cast<chrono::milliseconds>(now - midnight).count();
+  auto midnight = system_clock::from_time_t(midnightTimeT);
+  long millisecondsSinceMidnight = duration_cast<milliseconds>(now - midnight).count();
 
   return millisecondsSinceMidnight;
 }
