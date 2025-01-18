@@ -422,6 +422,21 @@ public:
   void show_my_bookings()
   {
     UserActions::require_auth();
-    Booking::get_booking_by_user_id(UserActions::current_user->id);
+    vector<Booking> bookings = Booking::get_booking_by_user_id(UserActions::current_user->id);
+
+    vector<vector<string>> matrix;
+    matrix.push_back(vector<string>{"Floor No.", "Room No.", "Start Date", "End Date"});
+
+    for (const Booking &booking : bookings)
+    {
+      matrix.push_back(vector<string>{
+          to_string(booking.floor_no),
+          to_string(booking.room_no),
+          booking.start_date,
+          booking.end_date,
+      });
+    }
+
+    show_as_table(matrix);
   }
 };
