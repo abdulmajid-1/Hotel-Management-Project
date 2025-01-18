@@ -67,6 +67,18 @@ struct FloorNode
   // except root node, all the other nodes are floors so they should have linked list of rooms
   // we will add rooms later
   RoomNode *rooms;
+
+  // whenever floor node is deleted, all the rooms
+  ~FloorNode()
+  {
+    RoomNode *temp = rooms;
+    while (temp)
+    {
+      RoomNode *next = temp->next;
+      delete temp;
+      temp = next;
+    }
+  }
 };
 
 // this will be the tree
@@ -78,7 +90,16 @@ class Hotel
   const string FLOOR_TABLE_NAME = "floors";
   const string ROOM_TABLE_NAME = "rooms";
 
+  void delete_hotel_nodes(FloorNode *root)
+  {
+    for (int i = 0; i < root->children.size(); i++)
+      delete_hotel_nodes(root->children[i]);
+    delete root;
+  }
+
 public:
+  ~Hotel() { delete_hotel_nodes(root); }
+
   Hotel()
   {
     // getting all the floors from the disk, and adding them to the room
@@ -396,5 +417,11 @@ public:
     (new Booking(floor_no, room_no, UserActions::current_user->id, start_date, end_date))->save();
 
     cout << "Your Room is booked Successfully." << endl;
+  }
+
+  void show_my_bookings()
+  {
+    UserActions::require_auth();
+    Booking::get_booking_by_user_id(UserActions::current_user->id);
   }
 };

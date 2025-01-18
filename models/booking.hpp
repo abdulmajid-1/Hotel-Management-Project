@@ -32,6 +32,7 @@ public:
   static const string BOOKING_TABLE_NAME_STATIC;
   static vector<Booking> get_all_bookings();
   static vector<Booking> get_booking_by_floor_and_room_no(int floor_no, int room_no);
+  static vector<Booking> get_booking_by_user_id(int user_id);
 };
 
 const string Booking::BOOKING_TABLE_NAME_STATIC = "bookings";
@@ -57,6 +58,19 @@ vector<Booking> Booking::get_booking_by_floor_and_room_no(int floor_no, int room
   for (Booking booking : get_all_bookings())
   {
     if (booking.floor_no == floor_no && booking.room_no == room_no)
+      results.push_back(booking);
+  }
+
+  return results;
+}
+
+vector<Booking> Booking::get_booking_by_user_id(int user_id)
+{
+  vector<Booking> results;
+
+  for (Booking booking : get_all_bookings())
+  {
+    if (booking.user_id == user_id)
       results.push_back(booking);
   }
 

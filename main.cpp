@@ -12,7 +12,7 @@ void show_admin_options()
 
 void show_user_options()
 {
-  vector<string> options = {"Show All Rooms", "Show Rooms in Dates", "Book Room", "Signout", "Clear"};
+  vector<string> options = {"Show All Rooms", "Show Rooms in Dates", "Book Room", "Show my Bookings", "Signout", "Clear"};
   for (int i = 0; i < options.size(); i++)
     cout << char(i + 'a') << ": " << options[i] << endl;
 }
@@ -177,15 +177,18 @@ void handle_user_functionality(Hotel &hotel)
       cin >> end_date;
 
       hotel.book_room(floor_no, room_no, start_date, end_date);
-
       break;
 
     case 'd':
+      hotel.show_my_bookings();
+      break;
+
+    case 'e':
       UserActions::signout();
       manage_auth();
       break;
 
-    case 'e':
+    case 'f':
       clear();
       break;
 
