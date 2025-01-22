@@ -9,3 +9,31 @@
 Our Tree just has **1 level**. On this level, there can be infinite nodes, thus there can be infinite Floors.
 
 Each Floor contains a LinkedList of **Room Nodes**. There can be infinite rooms. Was this a good choice of using LinkedList instead of Array? In my opinion this was not a good choice, a simple array was better choice, because we are adding elements to the end of array.
+
+## Folder Structure
+
+```
+.
+├── data
+│   ├── bookings.txt
+│   ├── floors.txt
+│   ├── rooms.txt
+│   └── users.txt
+├── images
+│   └── hotel-data-model.jpg
+├── lines.sh
+├── main.cpp
+├── models
+│   ├── booking.hpp
+│   ├── hotel.hpp
+│   ├── persistor.cpp
+│   ├── persistor.hpp
+│   ├── user.cpp
+│   └── user.hpp
+├── README.md
+├── run.sh
+└── utilities
+    ├── date.hpp
+    ├── utils.cpp
+    └── utils.hpp
+```
