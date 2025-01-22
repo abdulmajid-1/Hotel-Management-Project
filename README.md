@@ -37,3 +37,9 @@ Each Floor contains a LinkedList of **Room Nodes**. There can be infinite rooms.
     ├── utils.cpp
     └── utils.hpp
 ```
+
+- **main.cpp** is the starting point of application.
+- **Models** contains the all the functionalities related to data handling, like _booking_ data, _users_ data and _hotel_ data.
+- **Utilities** contains all the normal utils and and Date related Utils.
+- **lines.sh** will show how many lines are in our project.
+- **Data** folder has all the data that is handled through File Handling.
