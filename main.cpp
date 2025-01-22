@@ -259,7 +259,6 @@ int main()
     catch (const exception &e)
     {
       cout << "Exception: " << e.what() << endl;
-      exit(1);
     }
 
     // if signout is called, means current_user will be null, so keep running
