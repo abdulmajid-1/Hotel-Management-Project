@@ -7,15 +7,13 @@ const string UserActions::USER_TABLE_NAME = "users";
 // populating data from the disk at the start of application
 void UserActions::populate_users()
 {
-  vector<User *> users;
   vector<vector<string>> data = Persistor::get_table(USER_TABLE_NAME);
   for (vector<string> row : data)
   {
     User *user = new User(stoi(row[0]), row[1], row[2]);
     user->role = row[3] == "ADMIN" ? ADMIN : USER;
-    users.push_back(user);
+    UserActions::users.push_back(user);
   }
-  UserActions::users = users;
 }
 
 vector<User *> UserActions::get_all_users() { return users; }
