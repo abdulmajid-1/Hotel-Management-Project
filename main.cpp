@@ -246,11 +246,14 @@ int main()
 
     try
     {
-      // Handle functionality based on the role
-      if (UserActions::current_user && UserActions::current_user->role == ADMIN)
-        handle_admin_functionality(hotel);
-      else
-        handle_user_functionality(hotel);
+      if (UserActions::current_user) 
+      { 
+        // Handle functionality based on the role
+        if (UserActions::current_user->role == ADMIN)
+          handle_admin_functionality(hotel);
+        else
+          handle_user_functionality(hotel);
+      }
     }
     catch (const char *&msg)
     {
