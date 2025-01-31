@@ -128,7 +128,7 @@ public:
 
       int counter = 0;
       FloorNode *current_floor = root->children[counter];
-      while (counter < root->children.size() && counter < which_floor - 1)
+      while (counter < root->children.size() && current_floor->floor_no != which_floor)
         current_floor = root->children[++counter];
 
       RoomNode *new_room = new RoomNode(stoi(row[0]), stoi(row[1]), stringToType(row[2]));
@@ -140,7 +140,7 @@ public:
         RoomNode *curr_room = current_floor->rooms;
 
         while (curr_room->next != NULL)
-          curr_room->next;
+          curr_room = curr_room->next;
         curr_room->next = new_room;
       }
     }
