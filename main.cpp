@@ -3,9 +3,6 @@
 #include "models/hotel.hpp"
 using namespace std;
 
-// forward declaration for recursive main call
-int main();
-
 void show_admin_options()
 {
   vector<string> options = {"Create Floor", "Add room", "Show All Floors", "Show All Rooms", "Update Room", "Show All Users", "Show All Bookings", "Delete Booking", "Delete User", "Signout", "Clear"};
@@ -246,8 +243,8 @@ int main()
 
     try
     {
-      if (UserActions::current_user) 
-      { 
+      if (UserActions::current_user)
+      {
         // Handle functionality based on the role
         if (UserActions::current_user->role == ADMIN)
           handle_admin_functionality(hotel);
